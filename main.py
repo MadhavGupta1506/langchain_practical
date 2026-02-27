@@ -3,7 +3,6 @@ import asyncio
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
-# from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pinecone import Pinecone
 from langchain_pinecone import PineconeVectorStore
@@ -27,11 +26,6 @@ if not hf_api_key:
 pc = Pinecone(api_key=pinecone_api_key)
 index_description = pc.describe_index(name=pinecone_index_name)
 
-# Embeddings
-# embeddings = GoogleGenerativeAIEmbeddings(
-#     api_key=google_api_key,
-#     model="models/gemini-embedding-001"
-# )
 embeddings = HuggingFaceEndpointEmbeddings(
     huggingfacehub_api_token=hf_api_key,
     model=hf_model,
@@ -70,14 +64,9 @@ vector_store = PineconeVectorStore(
     index_name=pinecone_index_name,
     embedding=embeddings
 )
-
-
-
 # Async ingestion with concurrency
 async def ingest():
     config = RunnableConfig(max_concurrency=5)
-
     await vector_store.aadd_documents(texts, config=config)
 asyncio.run(ingest())
-
 print("Ingestion complete")
