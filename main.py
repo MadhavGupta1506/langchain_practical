@@ -37,14 +37,7 @@ index_dimension = (
     if hasattr(index_description, "dimension")
     else index_description.get("dimension")
 )
-embedding_dimension = len(embeddings.embed_query("dimension check"))
 
-if index_dimension != embedding_dimension:
-    raise ValueError(
-        f"Embedding dimension mismatch: model outputs {embedding_dimension}, "
-        f"but Pinecone index '{pinecone_index_name}' expects {index_dimension}. "
-        "Set HF_EMBED_MODEL to a model with matching dimension or create a matching index."
-    )
 # Load PDF
 file_path = "Dsa.pdf"
 loader = PyPDFLoader(file_path)
